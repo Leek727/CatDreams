@@ -10,20 +10,22 @@ class Autoencoder(Model):
         super(Autoencoder, self).__init__()
         self.encoder = tf.keras.Sequential([
             layers.Flatten(),
-            layers.Dense(2048, activation='relu'),
-            #layers.Dense(1024, activation='relu'),
-            #layers.Dense(512, activation='relu'),
+            #layers.Dense(3072, activation='relu'),
+            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
+            layers.Dropout(.1),
+            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
             #layers.Dense(256, activation='relu'),
-            layers.Dense(latent_dim, activation='relu'),
+            layers.Dense(latent_dim, activation='relu', kernel_regularizer='l1'),
         ])
 
         self.decoder = tf.keras.Sequential([
             #layers.Dense(256, activation='relu'),
-            #layers.Dense(512, activation='relu'),
-            #layers.Dense(1024, activation='relu'),
-            layers.Dense(2048, activation='relu'),
-            layers.Dense(largest[0]**2, activation='sigmoid'),
-            layers.Reshape((largest[0], largest[1]))
+            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
+            layers.Dropout(.1),
+            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
+            #layers.Dense(3072, activation='relu'),
+            layers.Dense(3*(largest[0]**2), activation='sigmoid'),
+            layers.Reshape((largest[0], largest[1], 3))
         ])
     
     # needed for tensorflow model.call
@@ -42,19 +44,18 @@ class Autoencoder(Model):
 
 # create model / load old model
 load_flag = input("Load old model (y/n)? : ").strip()
-catdream = Autoencoder(50)
+catdream = Autoencoder(15)
 if 'y' in load_flag:
     print("loading...")
     catdream.model_load()
 
-catdream.compile(optimizer=tf.keras.optimizers.Adam(learning_rate =.0001), loss='binary_crossentropy', metrics=['accuracy'],)
+catdream.compile(optimizer=tf.keras.optimizers.Adam(learning_rate =.00001), loss='binary_crossentropy', metrics=['accuracy'],)
 
 catdream.fit(x_train, x_train,
-    epochs=5,
+    epochs=1000,
     shuffle=True,
     validation_split=.2,
     batch_size=32
-
 )
 
 catdream.model_save()
@@ -62,12 +63,10 @@ catdream.model_save()
 
 """
 catdream.compile(optimizer=tf.keras.optimizers.Adam(lr=.0001), loss='binary_crossentropy', metrics=['accuracy'],)
-
 catdream.fit(x_train, x_train,
     epochs=5,
     shuffle=True,
     validation_split=.2,
     batch_size=32
-
 )
 """
