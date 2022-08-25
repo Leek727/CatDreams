@@ -11,18 +11,20 @@ class Autoencoder(Model):
         self.encoder = tf.keras.Sequential([
             layers.Flatten(),
             #layers.Dense(3072, activation='relu'),
-            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
-            layers.Dropout(.1),
-            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
+            layers.Dense(32**2, activation='relu'),
+            layers.Dense(32**2, activation='relu'),
+            #layers.Dropout(.1),
+            #layers.Dense(4096, activation='relu', kernel_regularizer='l1'),
             #layers.Dense(256, activation='relu'),
-            layers.Dense(latent_dim, activation='relu', kernel_regularizer='l1'),
+            layers.Dense(latent_dim, activation='relu'),
         ])
 
         self.decoder = tf.keras.Sequential([
             #layers.Dense(256, activation='relu'),
-            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
-            layers.Dropout(.1),
-            layers.Dense(3072, activation='relu', kernel_regularizer='l1'),
+            #layers.Dense(4096, activation='relu', kernel_regularizer='l1'),
+            #layers.Dropout(.1),
+            layers.Dense(32**2, activation='relu'),
+            layers.Dense(32**2, activation='relu'),
             #layers.Dense(3072, activation='relu'),
             layers.Dense(3*(largest[0]**2), activation='sigmoid'),
             layers.Reshape((largest[0], largest[1], 3))
@@ -44,18 +46,19 @@ class Autoencoder(Model):
 
 # create model / load old model
 load_flag = input("Load old model (y/n)? : ").strip()
-catdream = Autoencoder(15)
+catdream = Autoencoder(64)
 if 'y' in load_flag:
     print("loading...")
     catdream.model_load()
 
-catdream.compile(optimizer=tf.keras.optimizers.Adam(learning_rate =.00001), loss='binary_crossentropy', metrics=['accuracy'],)
+#Adam( lr = 0.1, beta_1 = 0.9, beta_2 = 0.999, epsilon = 1.0, decay = 0.1 )
+catdream.compile(optimizer=tf.keras.optimizers.Adam( lr = 0.001), loss='binary_crossentropy', metrics=['accuracy'],)
 
 catdream.fit(x_train, x_train,
-    epochs=1000,
+    epochs=10,
     shuffle=True,
     validation_split=.2,
-    batch_size=32
+    #batch_size=32
 )
 
 catdream.model_save()

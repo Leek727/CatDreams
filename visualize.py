@@ -6,11 +6,11 @@ from keras.models import load_model
 
 model = load_model('catdream.h5')
 model.summary()
-latent_dim = 15
+latent_dim = 64
 
 def gen(latent):
     img = model.predict(np.array([latent]))[0]
-    #img = (img*255).astype(np.uint8)
+    img = (img*255).astype(np.uint8)
     return img
 
 # Create a subplot
@@ -32,7 +32,7 @@ def update(val):
         latent_space.append(i.val)
 
     print(latent_space)
-    ax.imshow(gen(latent_space))#,cmap='gray'
+    ax.imshow(gen(latent_space))#, cmap='gray'
  
 # Call update function when slider value is changed
 for i in sliders:

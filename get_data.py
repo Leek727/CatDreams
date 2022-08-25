@@ -12,16 +12,18 @@ for root, dirs, files in os.walk("cats", topdown=False):
             #img = np.array(Image.open(path).convert('L').getdata(), dtype=np.uint8)
             #img = img.reshape(64,64)
             img = np.array(Image.open(path))
-            x_train.append(img) # Note the dtype input
+            #img = np.array(img).astype('float32') / 255
+            #b, g, r = img[:, :, 0], img[:, :, 1], img[:, :, 2]
+            x_train.append(img) 
 
         except Exception as e:
             print(e)
             print(path)
         
-        if f > 2000:
+        """if f > 10:
             break
 
-        f+=1
+        f+=1"""
             
 x_train = np.array(x_train).astype('float32') / 255
 

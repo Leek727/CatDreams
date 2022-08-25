@@ -18,7 +18,7 @@ for root, dirs, files in os.walk("cats", topdown=False):
         
         #img = np.array(Image.open(path).convert('L').getdata(), dtype=np.uint8)
         #img = img.reshape(64,64) / 255
-        img = np.array(Image.open(path))
+        img = np.array(Image.open(path)) / 255
         ff = img
             #print(img[0])
 
@@ -26,13 +26,14 @@ for root, dirs, files in os.walk("cats", topdown=False):
         #for i in range(len(a)):
         #    a[i] += latent[i]
 
-        print(latent)
+        print(list(latent))
         img = model.predict(np.array([latent]))[0]
         print(img[0])
            
         # resize image
         img = cv2.resize(img, (300,300))
         cv2.imshow("", img)
+        cv2.imwrite(f"outputs/{f}.png",img*255)
         #cv2.imshow("",ff)
         cv2.waitKey(50)
 
