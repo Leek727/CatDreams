@@ -16,7 +16,7 @@ class Autoencoder(Model):
             #layers.Dropout(.1),
             #layers.Dense(4096, activation='relu', kernel_regularizer='l1'),
             #layers.Dense(256, activation='relu'),
-            layers.Dense(latent_dim, activation='relu'),
+            layers.Dense(latent_dim, activation='sigmoid'),
         ])
 
         self.decoder = tf.keras.Sequential([
@@ -50,9 +50,11 @@ catdream = Autoencoder(64)
 if 'y' in load_flag:
     print("loading...")
     catdream.model_load()
+    catdream.encoder.summary()
+    catdream.decoder.summary()
 
 #Adam( lr = 0.1, beta_1 = 0.9, beta_2 = 0.999, epsilon = 1.0, decay = 0.1 )
-catdream.compile(optimizer=tf.keras.optimizers.Adam( lr = 0.001), loss='binary_crossentropy', metrics=['accuracy'],)
+catdream.compile(optimizer=tf.keras.optimizers.Adam( learning_rate = 0.0001), loss='binary_crossentropy', metrics=['accuracy'],)
 
 catdream.fit(x_train, x_train,
     epochs=10,

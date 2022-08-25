@@ -10,7 +10,7 @@ model = load_model('catdream.h5')
 aaa = load_model('encoder.h5')
 model.summary()
 
-a = [0]*50
+a = [0]*32
 f = 0
 for root, dirs, files in os.walk("cats", topdown=False):
     for name in files:
@@ -23,21 +23,21 @@ for root, dirs, files in os.walk("cats", topdown=False):
             #print(img[0])
 
         latent = aaa.predict(np.array([img]))[0]
-        #for i in range(len(a)):
-        #    a[i] += latent[i]
+        for i in range(len(a)):
+            a[i] += latent[i]
 
-        print(list(latent))
+        #print(list(latent))
         img = model.predict(np.array([latent]))[0]
-        print(img[0])
+        #print(img[0])
            
         # resize image
         img = cv2.resize(img, (300,300))
-        cv2.imshow("", img)
+        cv2.imshow("", np.concatenate((img, cv2.resize(ff, (300,300))), axis=1))
         cv2.imwrite(f"outputs/{f}.png",img*255)
         #cv2.imshow("",ff)
         cv2.waitKey(50)
 
-        if f > 100:
+        if f > 50:
             break
 
         f+= 1
