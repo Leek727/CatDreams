@@ -20,10 +20,9 @@ for root, dirs, files in os.walk("cats", topdown=False):
             print(e)
             print(path)
         
-        """if f > 10:
-            break
-
-        f+=1"""
+        #if f > 10:
+        #    break
+        #f+=1
             
 x_train = np.array(x_train).astype('float32') / 255
 

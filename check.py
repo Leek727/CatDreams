@@ -27,12 +27,15 @@ for root, dirs, files in os.walk("cats", topdown=False):
             a[i] += latent[i]
 
         #print(list(latent))
+        print(latent.shape)
         img = model.predict(np.array([latent]))[0]
         #print(img[0])
            
         # resize image
         img = cv2.resize(img, (300,300))
-        cv2.imshow("", np.concatenate((img, cv2.resize(ff, (300,300))), axis=1))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        
+        cv2.imshow("", img)#np.concatenate((img, cv2.resize(ff, (300,300))), axis=1))
         cv2.imwrite(f"outputs/{f}.png",img*255)
         #cv2.imshow("",ff)
         cv2.waitKey(50)
@@ -42,4 +45,4 @@ for root, dirs, files in os.walk("cats", topdown=False):
 
         f+= 1
 
-print([x/100 for x in a])
+print([x/50 for x in a])
